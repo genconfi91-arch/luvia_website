@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Dancing_Script, Inter, Outfit } from "next/font/google";
+import { FirebaseAnalytics } from "@/components/FirebaseAnalytics";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -64,6 +65,7 @@ export default function RootLayout({
     <html lang="en" className={`${outfit.variable} ${inter.variable} ${dancingScript.variable}`}>
       <body className="min-h-[100dvh] antialiased pb-[max(0px,env(safe-area-inset-bottom))]">
         {children}
+        <FirebaseAnalytics />
       </body>
     </html>
   );

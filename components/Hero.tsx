@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -69,7 +69,7 @@ function PhoneFrame({ className = "" }: Readonly<{ className?: string }>) {
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto overscroll-contain px-2.5 pb-3 pt-1 [-ms-overflow-style:none] [scrollbar-width:none] max-lg:px-2.5 max-lg:pb-3 sm:px-3 sm:pb-4 [&::-webkit-scrollbar]:hidden">
+          <div className="flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto overscroll-contain px-2.5 pb-3 pt-1 [-ms-overflow-style:none] [scrollbar-width:none] max-lg:overflow-y-hidden max-lg:px-2.5 max-lg:pb-3 sm:px-3 sm:pb-4 [&::-webkit-scrollbar]:hidden">
             <div
               className="flex min-h-0 flex-1 flex-col justify-center rounded-[15px] border border-[#3B494C]/35 p-3 sm:rounded-[20px] sm:p-3.5 lg:rounded-[22px] lg:p-4"
               style={{
@@ -157,18 +157,25 @@ const PLAY_STORE_BTN_CLASS =
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
+  /** Defer entrance animation until after mount so SSR HTML matches first client render (avoids hydration mismatch). */
+  const [heroMotionReady, setHeroMotionReady] = useState(false);
+
+  useEffect(() => {
+    setHeroMotionReady(true);
+  }, []);
 
   useEffect(() => {
     const el = heroRef.current;
     if (!el) return;
-    setTimeout(() => el.classList.remove("opacity-0"), 50);
+    const t = window.setTimeout(() => el.classList.remove("opacity-0"), 50);
+    return () => window.clearTimeout(t);
   }, []);
 
   return (
     <section
       ref={heroRef}
       id="hero"
-      className="relative flex min-h-[100dvh] min-h-[100svh] overflow-x-hidden bg-bg opacity-0 transition-opacity duration-700"
+      className="relative flex min-h-0 w-full overflow-x-clip bg-bg opacity-0 transition-opacity duration-700"
     >
       <div
         className="pointer-events-none absolute -left-1/4 -top-1/4 h-[60vw] w-[60vw] rounded-full"
@@ -192,7 +199,9 @@ export default function Hero() {
         className="mx-auto flex w-full min-w-0 max-w-[1200px] flex-col gap-7 px-4 pb-10 pt-[max(4.75rem,calc(4.25rem+env(safe-area-inset-top,0px)))] sm:gap-8 sm:px-5 sm:pb-16 md:px-10 md:pb-20 lg:grid lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-10 lg:px-16 lg:pb-20 lg:pt-[max(6.5rem,calc(5.75rem+env(safe-area-inset-top,0px)))] lg:items-start"
       >
         {/* Heading — same max width as body column on lg for one clean left edge */}
-        <div className="animate-fade-in-up flex w-full max-w-full flex-col items-center gap-4 text-center sm:gap-5 lg:col-start-1 lg:row-start-1 lg:max-w-[min(100%,36rem)] lg:items-start lg:gap-5 lg:text-left">
+        <div
+          className={`flex w-full max-w-full flex-col items-center gap-4 text-center sm:gap-5 lg:col-start-1 lg:row-start-1 lg:max-w-[min(100%,36rem)] lg:items-start lg:gap-5 lg:text-left${heroMotionReady ? " animate-fade-in-up" : ""}`}
+        >
           <span className="hero-eyebrow">Powered by AI</span>
 
           <h1 className="hero-title w-full max-w-[min(100%,19ch)] sm:max-w-[min(100%,22ch)] lg:max-w-none">

@@ -6,10 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "deploy": "npm run build && npx firebase deploy --only hosting",
+    "serve:out": "npx firebase serve --only hosting",
+    "firebase:login": "npx firebase login",
+    "firebase:use": "npx firebase use --add",
+    "firebase:projects": "npx firebase projects:list"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.2.2",
+    "firebase": "^12.11.0",
     "lucide-react": "^1.7.0",
     "next": "16.2.2",
     "postcss": "^8.5.8",
@@ -23,6 +29,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
+    "firebase-tools": "^15.13.0",
     "typescript": "^5"
   }
 }
